@@ -163,3 +163,37 @@ with tab2:
             cF.metric("Ganancia Neta", f"${(precio - total) * cantidad:.2f}")
 
 # ==================== PESTAÑA 3: COTIZACIÓN ====================
+with tab3:
+    st.header("📄 Generador de Presupuesto")
+    colC1, colC2 = st.columns(2)
+    with colC1:
+        empresa = st.text_input("Cliente/Empresa:", placeholder="Ej. Eternal Beauty")
+    with colC2:
+        contacto = st.text_input("Atención a:", placeholder="Ej. María")
+        
+    if 'cot' in st.session_state:
+        d = st.session_state['cot']
+        nom = empresa if empresa else "A quien corresponda"
+        atn = f"\nAtención: {contacto}" if contacto else ""
+        
+        texto = f"""=========================================
+           PRESUPUESTO - RUBIQ ARTS
+=========================================
+Fecha: {d['fecha']}
+Cliente: {nom} {atn}
+
+Detalles del Pedido:
+-----------------------------------------
+- Producto: {d['prod']}
+- Técnica:  {d['tec']}
+- Cantidad: {d['cant']} unidades
+
+Inversión:
+-----------------------------------------
+- Precio Unitario:  ${d['pu']:.2f} USD
+- TOTAL PROYECTO:   ${d['pt']:.2f} USD
+
+* Condiciones: 50% anticipo. Válido por 15 días.
+========================================="""
+        st.text_area("Vista previa:", value=texto, height=350)
+        st.download_button("📥 Descargar Cotización", data=texto, file_name=f"Cotizacion_RubiqArts.txt", mime="text/plain")
