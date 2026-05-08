@@ -34,7 +34,9 @@ PROVEEDORES_VINIL = {
     "Siser EasyWeed (Yarda 15\"x36\")": {"precio": 14.00, "ancho_util": 14.5, "largo_util": 36.0},
 }
 
-TARIFA_HORA = 20.00
+# --- TARIFAS DIFERENCIADAS ---
+TARIFA_HORA_DTF = 20.00
+TARIFA_HORA_VINIL = 22.00
 COSTO_PLANCHA_UNIDAD = 0.50
 
 # --- BARRA LATERAL ---
@@ -100,7 +102,7 @@ with tab1:
                 tiempo_plancha += 2 
 
         costo_dtf = ((largo_lineal * cantidad) * costo_por_pulgada) / cantidad if cantidad > 0 else 0
-        costo_mo = ((5 + tiempo_plancha) / 60) * TARIFA_HORA
+        costo_mo = ((5 + tiempo_plancha) / 60) * TARIFA_HORA_DTF
         total = costo_blank + costo_dtf + costo_mo + COSTO_PLANCHA_UNIDAD + costo_empaque
         precio = calcular_precio_final(total)
         
@@ -110,6 +112,16 @@ with tab1:
         cA.metric("Costo Real (c/u)", f"${total:.2f}")
         cB.metric(f"Precio Venta", f"${precio:.2f}")
         cC.metric("Ganancia Neta", f"${(precio - total) * cantidad:.2f}")
+        
+        # Desglose de Costos
+        with st.expander("📊 Ver Desglose de Costos Internos"):
+            st.markdown(f"""
+            * **Blank ({nombre_prenda_final}):** ${costo_blank:.2f}
+            * **Transfer DTF:** ${costo_dtf:.2f}
+            * **Mano de Obra (Tarifa DTF ${TARIFA_HORA_DTF}/hr):** ${costo_mo:.2f}
+            * **Uso de Plancha:** ${COSTO_PLANCHA_UNIDAD:.2f}
+            * **Empaque:** ${costo_empaque:.2f}
+            """)
 
 # ==================== PESTAÑA 2: VINIL (Nesting Automático) ====================
 with tab2:
@@ -151,7 +163,7 @@ with tab2:
             st.info(f"💡 El sistema calcula que salen **{piezas_por_rollo} piezas por rollo**. Necesitarás comprar/usar **{rollos_necesarios} rollo(s)** para este proyecto.")
             
             costo_vinil_unidad = costo_rollo / piezas_por_rollo
-            costo_mo = ((minutos_depilado + 3) / 60) * TARIFA_HORA
+            costo_mo = ((minutos_depilado + 3) / 60) * TARIFA_HORA_VINIL
             total = costo_blank + costo_vinil_unidad + costo_mo + COSTO_PLANCHA_UNIDAD + costo_empaque
             precio = calcular_precio_final(total)
             
@@ -161,6 +173,16 @@ with tab2:
             cD.metric("Costo Real (c/u)", f"${total:.2f}")
             cE.metric(f"Precio Venta", f"${precio:.2f}")
             cF.metric("Ganancia Neta", f"${(precio - total) * cantidad:.2f}")
+            
+            # Desglose de Costos
+            with st.expander("📊 Ver Desglose de Costos Internos"):
+                st.markdown(f"""
+                * **Blank ({nombre_prenda_final}):** ${costo_blank:.2f}
+                * **Material Vinil (por pieza):** ${costo_vinil_unidad:.2f}
+                * **Mano de Obra (Tarifa Vinil ${TARIFA_HORA_VINIL}/hr):** ${costo_mo:.2f}
+                * **Uso de Plancha:** ${COSTO_PLANCHA_UNIDAD:.2f}
+                * **Empaque:** ${costo_empaque:.2f}
+                """)
 
 # ==================== PESTAÑA 3: COTIZACIÓN ====================
 with tab3:
